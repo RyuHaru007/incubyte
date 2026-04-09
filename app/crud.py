@@ -1,3 +1,4 @@
+from sqlalchemy import func
 from sqlalchemy.orm import Session
 from app import models, schemas
 
@@ -21,3 +22,10 @@ def update_employee(db: Session, db_employee: models.Employee, employee_update: 
 def delete_employee(db: Session, db_employee: models.Employee):
     db.delete(db_employee)
     db.commit()
+
+def get_country_metrics(db: Session, country: str):
+    return db.query(
+        func.min(models.Employee.salary).label("min_salary"),
+        func.max(models.Employee.salary).label("max_salary"),
+        func.avg(models.Employee.salary).label("avg_salary")
+    ).filter(models.Employee.country == country).first()

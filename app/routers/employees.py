@@ -17,6 +17,17 @@ def get_employee_or_404(emp_id: int, db: Session) -> schemas.EmployeeResponse:
 def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(get_db)):
     return crud.create_employee(db=db, employee=employee)
 
+@router.get("/metrics/country", response_model=schemas.CountryMetricsResponse)
+def get_country_metrics(country: str, db: Session = Depends(get_db)):
+    metrics = crud.get_country_metrics(db, country=country)
+    
+    return {
+        "country": country,
+        "min_salary": metrics.min_salary or 0.0,
+        "max_salary": metrics.max_salary or 0.0,
+        "avg_salary": metrics.avg_salary or 0.0
+    }
+
 @router.get("/{emp_id}", response_model=schemas.EmployeeResponse)
 def get_employee(emp_id: int, db: Session = Depends(get_db)):
     # --- REFACTORED TO USE HELPER ---

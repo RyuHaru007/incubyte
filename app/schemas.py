@@ -19,3 +19,9 @@ class SalaryResponse(BaseModel):
     deductions: float
     net_salary: float
     model_config = ConfigDict(from_attributes=True)
+
+class CountryMetricsResponse(BaseModel):
+    country: str
+    min_salary: float
+    max_salary: float
+    avg_salary: float
