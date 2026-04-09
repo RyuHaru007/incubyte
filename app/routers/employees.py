@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status,HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 
 from app import schemas, crud
@@ -6,13 +6,18 @@ from app.database import get_db
 
 router = APIRouter(prefix="/employees", tags=["Employees"])
 
+# --- NEW HELPER FUNCTION ---
+def get_employee_or_404(emp_id: int, db: Session) -> schemas.EmployeeResponse:
+    db_employee = crud.get_employee(db, employee_id=emp_id)
+    if not db_employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return db_employee
+
 @router.post("/", response_model=schemas.EmployeeResponse, status_code=status.HTTP_201_CREATED)
 def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(get_db)):
     return crud.create_employee(db=db, employee=employee)
 
 @router.get("/{emp_id}", response_model=schemas.EmployeeResponse)
 def get_employee(emp_id: int, db: Session = Depends(get_db)):
-    db_employee = crud.get_employee(db, employee_id=emp_id)
-    if not db_employee:
-        raise HTTPException(status_code=404, detail="Employee not found")
-    return db_employee
+    # --- REFACTORED TO USE HELPER ---
+    return get_employee_or_404(emp_id, db)
