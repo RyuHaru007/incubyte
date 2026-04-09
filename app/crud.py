@@ -7,3 +7,6 @@ def create_employee(db: Session, employee: schemas.EmployeeCreate):
     db.commit()
     db.refresh(db_employee)
     return db_employee
+
+def get_employee(db: Session, employee_id: int):
+    return db.query(models.Employee).filter(models.Employee.id == employee_id).first()

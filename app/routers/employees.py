@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, status,HTTPException
 from sqlalchemy.orm import Session
 
 from app import schemas, crud
@@ -9,3 +9,10 @@ router = APIRouter(prefix="/employees", tags=["Employees"])
 @router.post("/", response_model=schemas.EmployeeResponse, status_code=status.HTTP_201_CREATED)
 def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(get_db)):
     return crud.create_employee(db=db, employee=employee)
+
+@router.get("/{emp_id}", response_model=schemas.EmployeeResponse)
+def get_employee(emp_id: int, db: Session = Depends(get_db)):
+    db_employee = crud.get_employee(db, employee_id=emp_id)
+    if not db_employee:
+        raise HTTPException(status_code=404, detail="Employee not found")
+    return db_employee
