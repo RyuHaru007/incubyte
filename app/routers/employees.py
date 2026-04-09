@@ -21,20 +21,26 @@ def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(get_
 def get_country_metrics(country: str, db: Session = Depends(get_db)):
     metrics = crud.get_country_metrics(db, country=country)
     
+    if metrics.avg_salary is None:
+        raise HTTPException(status_code=404, detail="No data found for this country")
+        
     return {
         "country": country,
-        "min_salary": metrics.min_salary or 0.0,
-        "max_salary": metrics.max_salary or 0.0,
-        "avg_salary": metrics.avg_salary or 0.0
+        "min_salary": metrics.min_salary,
+        "max_salary": metrics.max_salary,
+        "avg_salary": metrics.avg_salary
     }
 
 @router.get("/metrics/title", response_model=schemas.JobTitleMetricsResponse)
 def get_job_title_metrics(job_title: str, db: Session = Depends(get_db)):
     metrics = crud.get_job_title_metrics(db, job_title=job_title)
     
+    if metrics.avg_salary is None:
+        raise HTTPException(status_code=404, detail="No data found for this job title")
+        
     return {
         "job_title": job_title,
-        "avg_salary": metrics.avg_salary or 0.0
+        "avg_salary": metrics.avg_salary
     }
 
 @router.get("/{emp_id}", response_model=schemas.EmployeeResponse)
