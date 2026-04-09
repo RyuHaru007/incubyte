@@ -12,3 +12,10 @@ class EmployeeCreate(EmployeeBase):
 class EmployeeResponse(EmployeeBase):
     id: int
     model_config = ConfigDict(from_attributes=True)
+
+class SalaryResponse(BaseModel):
+    employee_id: int
+    gross_salary: float
+    deductions: float
+    net_salary: float
+    model_config = ConfigDict(from_attributes=True)
