@@ -26,3 +26,8 @@ def get_employee(emp_id: int, db: Session = Depends(get_db)):
 def update_employee(emp_id: int, employee_update: schemas.EmployeeCreate, db: Session = Depends(get_db)):
     db_employee = get_employee_or_404(emp_id, db)
     return crud.update_employee(db=db, db_employee=db_employee, employee_update=employee_update)
+
+@router.delete("/{emp_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_employee(emp_id: int, db: Session = Depends(get_db)):
+    db_employee = get_employee_or_404(emp_id, db)
+    crud.delete_employee(db=db, db_employee=db_employee)

@@ -17,3 +17,7 @@ def update_employee(db: Session, db_employee: models.Employee, employee_update: 
     db.commit()
     db.refresh(db_employee)
     return db_employee
+
+def delete_employee(db: Session, db_employee: models.Employee):
+    db.delete(db_employee)
+    db.commit()
