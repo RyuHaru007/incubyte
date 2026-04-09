@@ -29,3 +29,10 @@ def test_job_title_salary_metrics(client):
     data = response.json()
     assert data["job_title"] == "Dev"
     assert data["avg_salary"] == 200000.0  # (100k + 300k) / 2
+
+def test_metrics_no_data_found(client):
+    response_country = client.get("/employees/metrics/country?country=Mars")
+    assert response_country.status_code == 404
+
+    response_title = client.get("/employees/metrics/title?job_title=Astronaut")
+    assert response_title.status_code == 404
