@@ -13,6 +13,12 @@ def get_employee_or_404(emp_id: int, db: Session) -> schemas.EmployeeResponse:
         raise HTTPException(status_code=404, detail="Employee not found")
     return db_employee
 
+def check_metrics_exist_or_404(avg_salary):
+    if avg_salary is None:
+        raise HTTPException(status_code=404, detail="No data found")
+
+
+
 @router.post("/", response_model=schemas.EmployeeResponse, status_code=status.HTTP_201_CREATED)
 def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(get_db)):
     return crud.create_employee(db=db, employee=employee)
@@ -20,10 +26,8 @@ def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(get_
 @router.get("/metrics/country", response_model=schemas.CountryMetricsResponse)
 def get_country_metrics(country: str, db: Session = Depends(get_db)):
     metrics = crud.get_country_metrics(db, country=country)
+    check_metrics_exist_or_404(metrics.avg_salary) # <-- Use the helper
     
-    if metrics.avg_salary is None:
-        raise HTTPException(status_code=404, detail="No data found for this country")
-        
     return {
         "country": country,
         "min_salary": metrics.min_salary,
@@ -34,9 +38,7 @@ def get_country_metrics(country: str, db: Session = Depends(get_db)):
 @router.get("/metrics/title", response_model=schemas.JobTitleMetricsResponse)
 def get_job_title_metrics(job_title: str, db: Session = Depends(get_db)):
     metrics = crud.get_job_title_metrics(db, job_title=job_title)
-    
-    if metrics.avg_salary is None:
-        raise HTTPException(status_code=404, detail="No data found for this job title")
+    check_metrics_exist_or_404(metrics.avg_salary) # <-- Use the helper
         
     return {
         "job_title": job_title,
