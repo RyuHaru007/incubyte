@@ -16,3 +16,15 @@ def test_calculate_salary_india(client):
     assert data["deductions"] == 10000.0   # 10%
     assert data["net_salary"] == 90000.0
 
+def test_calculate_salary_us(client):
+    create_resp = client.post(
+        "/employees/",
+        json={"full_name": "John", "job_title": "Manager", "country": "United States", "salary": 100000.0}
+    )
+    emp_id = create_resp.json()["id"]
+
+    response = client.get(f"/employees/{emp_id}/salary")
+    
+    data = response.json()
+    assert data["deductions"] == 12000.0   # 12%
+    assert data["net_salary"] == 88000.0
