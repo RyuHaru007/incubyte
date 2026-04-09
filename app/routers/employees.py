@@ -35,27 +35,10 @@ def delete_employee(emp_id: int, db: Session = Depends(get_db)):
 @router.get("/{emp_id}/salary", response_model=schemas.SalaryResponse)
 def get_employee_salary(emp_id: int, db: Session = Depends(get_db)):
     db_employee = get_employee_or_404(emp_id, db)
-    
-    # Hardcoded to pass the India test
-    deductions = db_employee.salary * 0.10
-    net_salary = db_employee.salary - deductions
-    
-    return {
-        "employee_id": db_employee.id,
-        "gross_salary": db_employee.salary,
-        "deductions": deductions,
-        "net_salary": net_salary
-    }
-
-@router.get("/{emp_id}/salary", response_model=schemas.SalaryResponse)
-def get_employee_salary(emp_id: int, db: Session = Depends(get_db)):
-    db_employee = get_employee_or_404(emp_id, db)
-    
     deductions, net_salary = services.calculate_deductions(
         country=db_employee.country, 
         gross_salary=db_employee.salary
     )
-    
     return {
         "employee_id": db_employee.id,
         "gross_salary": db_employee.salary,
