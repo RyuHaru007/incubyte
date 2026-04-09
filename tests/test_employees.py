@@ -43,3 +43,19 @@ def test_update_employee(client):
     assert response.status_code == 200
     assert response.json()["salary"] == 120000.0
     assert response.json()["job_title"] == "Director"
+
+def test_delete_employee(client):
+    # Setup
+    create_resp = client.post(
+        "/employees/",
+        json={"full_name": "Barry Allen", "job_title": "CSI", "country": "United States", "salary": 70000.0}
+    )
+    emp_id = create_resp.json()["id"]
+
+    # Action
+    response = client.delete(f"/employees/{emp_id}")
+    assert response.status_code == 204
+
+    # Verify it was actually deleted
+    get_resp = client.get(f"/employees/{emp_id}")
+    assert get_resp.status_code == 404
