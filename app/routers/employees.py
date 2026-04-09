@@ -21,3 +21,8 @@ def create_employee(employee: schemas.EmployeeCreate, db: Session = Depends(get_
 def get_employee(emp_id: int, db: Session = Depends(get_db)):
     # --- REFACTORED TO USE HELPER ---
     return get_employee_or_404(emp_id, db)
+
+@router.put("/{emp_id}", response_model=schemas.EmployeeResponse)
+def update_employee(emp_id: int, employee_update: schemas.EmployeeCreate, db: Session = Depends(get_db)):
+    db_employee = get_employee_or_404(emp_id, db)
+    return crud.update_employee(db=db, db_employee=db_employee, employee_update=employee_update)
