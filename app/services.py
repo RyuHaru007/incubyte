@@ -1,7 +1,8 @@
 def calculate_deductions(country: str, gross_salary: float) -> tuple[float, float]:
-    if country == "India":
+    country_normalized = country.strip().lower()
+    if country_normalized == "india":
         deduction_rate = 0.10
-    elif country == "United States":
+    elif country_normalized == "united states":
         deduction_rate = 0.12
     else:
         deduction_rate = 0.0
