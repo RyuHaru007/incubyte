@@ -24,3 +24,22 @@ def test_get_employee(client):
 def test_get_employee_not_found(client):
     response = client.get("/employees/999")
     assert response.status_code == 404
+
+def test_update_employee(client):
+    # Setup
+    create_resp = client.post(
+        "/employees/",
+        json={"full_name": "Diana Prince", "job_title": "Curator", "country": "France", "salary": 90000.0}
+    )
+    emp_id = create_resp.json()["id"]
+
+    # Action
+    response = client.put(
+        f"/employees/{emp_id}",
+        json={"full_name": "Diana Prince", "job_title": "Director", "country": "France", "salary": 120000.0}
+    )
+    
+    # Assert
+    assert response.status_code == 200
+    assert response.json()["salary"] == 120000.0
+    assert response.json()["job_title"] == "Director"
