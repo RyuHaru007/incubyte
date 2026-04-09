@@ -25,3 +25,7 @@ class CountryMetricsResponse(BaseModel):
     min_salary: float
     max_salary: float
     avg_salary: float
+
+class JobTitleMetricsResponse(BaseModel):
+    job_title: str
+    avg_salary: float

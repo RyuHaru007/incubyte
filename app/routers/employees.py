@@ -28,6 +28,15 @@ def get_country_metrics(country: str, db: Session = Depends(get_db)):
         "avg_salary": metrics.avg_salary or 0.0
     }
 
+@router.get("/metrics/title", response_model=schemas.JobTitleMetricsResponse)
+def get_job_title_metrics(job_title: str, db: Session = Depends(get_db)):
+    metrics = crud.get_job_title_metrics(db, job_title=job_title)
+    
+    return {
+        "job_title": job_title,
+        "avg_salary": metrics.avg_salary or 0.0
+    }
+
 @router.get("/{emp_id}", response_model=schemas.EmployeeResponse)
 def get_employee(emp_id: int, db: Session = Depends(get_db)):
     # --- REFACTORED TO USE HELPER ---

@@ -29,3 +29,8 @@ def get_country_metrics(db: Session, country: str):
         func.max(models.Employee.salary).label("max_salary"),
         func.avg(models.Employee.salary).label("avg_salary")
     ).filter(models.Employee.country == country).first()
+
+def get_job_title_metrics(db: Session, job_title: str):
+    return db.query(
+        func.avg(models.Employee.salary).label("avg_salary")
+    ).filter(models.Employee.job_title == job_title).first()
